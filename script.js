@@ -29,18 +29,42 @@ accordionButtons.forEach((button) => {
     const item = button.closest(".accordion-item");
     if (!item || !item.querySelector("p")) return;
 
-    const isOpen = item.classList.toggle("is-open");
-    button.setAttribute("aria-expanded", String(isOpen));
+    const accordion = item.closest(".accordion");
+    const shouldOpen = !item.classList.contains("is-open");
+
+    accordion?.querySelectorAll(".accordion-item").forEach((otherItem) => {
+      otherItem.classList.remove("is-open");
+      otherItem.querySelector("button")?.setAttribute("aria-expanded", "false");
+    });
+
+    item.classList.toggle("is-open", shouldOpen);
+    button.setAttribute("aria-expanded", String(shouldOpen));
   });
 });
 
 if (inspectionVideo && videoPlay) {
+  videoPlay.hidden = true;
+
+  const playInspectionVideo = () => {
+    inspectionVideo.play().catch(showManualPlay);
+  };
+
+  const pauseInspectionVideo = () => {
+    inspectionVideo.pause();
+  };
+
+  const showManualPlay = () => {
+    if (inspectionVideo.paused) videoPlay.hidden = false;
+  };
+
+  inspectionVideo.play().catch(showManualPlay);
+
   videoPlay.addEventListener("click", () => {
-    if (inspectionVideo.paused) {
-      inspectionVideo.play().catch(() => {});
-    } else {
-      inspectionVideo.pause();
-    }
+    playInspectionVideo();
+  });
+
+  inspectionVideo.addEventListener("click", () => {
+    if (!inspectionVideo.paused) pauseInspectionVideo();
   });
 
   inspectionVideo.addEventListener("play", () => {
@@ -76,10 +100,12 @@ anomalyTabs.forEach((tab) => {
 
 logoRows.forEach((row) => {
   const logos = Array.from(row.children);
-  logos.forEach((logo) => {
-    const clone = logo.cloneNode(true);
-    clone.setAttribute("aria-hidden", "true");
-    row.appendChild(clone);
+  Array.from({ length: 2 }).forEach(() => {
+    logos.forEach((logo) => {
+      const clone = logo.cloneNode(true);
+      clone.setAttribute("aria-hidden", "true");
+      row.appendChild(clone);
+    });
   });
 });
 
@@ -87,22 +113,32 @@ const methodSlider = document.querySelector(".method-slider");
 if (methodSlider) {
   const track = methodSlider.querySelector(".method-track");
   const cards = Array.from(track.children);
-  const dotsWrap = methodSlider.querySelector(".method-dots");
+  const dotWraps = Array.from(document.querySelectorAll(".visual-dots, .method-dots"));
   const featureImg = document.querySelector(".feature-img");
   let index = 0;
 
-  const dots = cards.map((_, i) => {
-    const dot = document.createElement("span");
-    dot.setAttribute("role", "tab");
-    dot.addEventListener("click", () => go(i));
-    dotsWrap.appendChild(dot);
-    return dot;
-  });
+  const dots = dotWraps.map((wrap) =>
+    cards.map((_, i) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.setAttribute("role", "tab");
+      dot.setAttribute("aria-label", `Show inspection method ${i + 1}`);
+      dot.addEventListener("click", () => go(i));
+      wrap.appendChild(dot);
+      return dot;
+    })
+  );
 
   function go(i) {
     index = (i + cards.length) % cards.length;
     track.style.transform = `translateX(-${index * 100}%)`;
-    dots.forEach((dot, d) => dot.classList.toggle("is-active", d === index));
+    dots.forEach((group) => {
+      group.forEach((dot, d) => {
+        const isActive = d === index;
+        dot.classList.toggle("is-active", isActive);
+        dot.setAttribute("aria-selected", String(isActive));
+      });
+    });
 
     const src = cards[index].dataset.image;
     if (featureImg && src && !featureImg.src.endsWith(src)) {
@@ -123,7 +159,7 @@ if (methodSlider) {
     };
     methodSlider.addEventListener("mouseenter", () => clearInterval(timer));
     methodSlider.addEventListener("mouseleave", reset);
-    dotsWrap.addEventListener("click", reset);
+    dotWraps.forEach((wrap) => wrap.addEventListener("click", reset));
   }
 }
 

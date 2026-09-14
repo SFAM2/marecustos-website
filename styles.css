@@ -118,14 +118,15 @@ button {
 
 .nav-link-dropdown::after {
   position: absolute;
-  top: 50%;
+  top: calc(50% + 1px);
   right: 0;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.7);
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
   content: "";
-  transform: translateY(-50%);
+  opacity: 0.78;
+  transform: translateY(-50%) rotate(45deg);
 }
 
 .nav-dropdown-wrap {
@@ -401,6 +402,19 @@ button {
   color: var(--cyan);
   font-size: 24px;
   line-height: 1;
+  animation: scroll-cue-bob 1.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes scroll-cue-bob {
+  0%,
+  100% {
+    transform: translateY(-3px);
+  }
+
+  50% {
+    transform: translateY(5px);
+  }
 }
 
 .section {
@@ -467,7 +481,15 @@ button {
   border: 1px solid rgba(0, 229, 255, 0.2);
   border-radius: 16px;
   background: linear-gradient(180deg, #0a1b2f 0%, rgba(10, 27, 47, 0.69) 100%);
-  box-shadow: 0 6px 18px rgba(0, 229, 255, 0.14);
+  box-shadow: 0 0 0 rgba(0, 229, 255, 0);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.service-card:hover,
+.value-card:hover {
+  border-color: rgba(0, 229, 255, 0.52);
+  box-shadow: 0 14px 32px rgba(0, 229, 255, 0.16);
+  transform: translateY(-4px);
 }
 
 .service-card {
@@ -495,6 +517,11 @@ button {
   font-size: 24px;
   font-weight: 600;
   line-height: 1.4;
+}
+
+.service-card:hover h3,
+.value-card:hover h3 {
+  color: var(--white);
 }
 
 .service-card p,
@@ -607,6 +634,10 @@ button {
   color: var(--cyan);
   cursor: pointer;
   transform: translate(-50%, -50%);
+}
+
+.video-play[hidden] {
+  display: none;
 }
 
 .video-play span {
@@ -922,10 +953,6 @@ button {
   text-align: center;
 }
 
-.logo-section:hover .logo-row {
-  animation-play-state: paused;
-}
-
 .logo-section h2 {
   margin: 0 0 10px;
   color: rgba(225, 227, 228, 0.8);
@@ -941,7 +968,7 @@ button {
   justify-content: flex-start;
   gap: 56px;
   width: max-content;
-  animation: logo-slide 34s linear infinite;
+  animation: logo-slide 28s linear infinite;
   will-change: transform;
 }
 
@@ -953,7 +980,7 @@ button {
 }
 
 .partners .logo-row {
-  animation-duration: 38s;
+  animation-duration: 30s;
 }
 
 @keyframes logo-slide {
@@ -962,7 +989,7 @@ button {
   }
 
   to {
-    transform: translateX(calc(-50% - 28px));
+    transform: translateX(calc(-33.333% - 18.666px));
   }
 }
 
@@ -1277,14 +1304,19 @@ button {
   margin: 20px auto 0;
 }
 
-.strip-dots span {
+.strip-dots span,
+.strip-dots button {
   width: 11px;
   height: 11px;
+  padding: 0;
+  border: 0;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
 }
 
-.strip-dots span.is-active {
+.strip-dots span.is-active,
+.strip-dots button.is-active {
   background: var(--cyan);
 }
 
@@ -1314,7 +1346,8 @@ button {
   cursor: pointer;
 }
 
-.method-dots span {
+.method-dots span,
+.method-dots button {
   cursor: pointer;
   transition: background 200ms ease;
 }
@@ -1440,6 +1473,11 @@ button {
 
 .rov {
   margin-top: 64px;
+  padding: 48px;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #0a1b2f 0%, rgba(10, 27, 47, 0.68) 100%);
+  box-shadow: 0 0 42px rgba(0, 229, 255, 0.08);
 }
 
 .rov-head h3 {
@@ -1457,7 +1495,7 @@ button {
 .rov-grid {
   display: grid;
   grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
-  gap: 56px;
+  gap: 72px;
   align-items: center;
   margin-top: 40px;
 }
@@ -1466,10 +1504,9 @@ button {
   display: grid;
   place-items: center;
   margin: 0;
-  padding: 24px;
-  border: 1px solid rgba(0, 229, 255, 0.12);
-  border-radius: 12px;
-  background: rgba(10, 27, 47, 0.4);
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .rov-media img {
@@ -1610,7 +1647,8 @@ button {
   margin-top: 28px;
 }
 
-.payload-dots span {
+.payload-dots span,
+.payload-dots button {
   cursor: pointer;
 }
 
@@ -1759,6 +1797,25 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+}
+
+.ind-row-reverse .ind-media img {
+  object-fit: contain;
+  padding: 12px;
+  background: rgba(6, 13, 25, 0.4);
+}
+
+.ind-apps li {
+  padding: 10px 12px;
+  border-radius: 6px;
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.ind-apps li:hover {
+  background: rgba(0, 229, 255, 0.1);
+  box-shadow: inset 3px 0 0 var(--cyan);
+  transform: translateX(3px);
 }
 
 .ind-apps {
@@ -1924,6 +1981,8 @@ button {
 .info-block {
   display: flex;
   gap: 16px;
+  border-radius: 12px;
+  transition: background 160ms ease, transform 160ms ease;
 }
 
 .info-icon {
@@ -1936,6 +1995,17 @@ button {
   border-radius: 12px;
   background: #0a1a2e;
   color: var(--cyan);
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.info-block:hover {
+  background: rgba(0, 229, 255, 0.04);
+  transform: translateX(3px);
+}
+
+.info-block:hover .info-icon {
+  background: rgba(0, 229, 255, 0.16);
+  box-shadow: 0 10px 24px rgba(0, 229, 255, 0.16);
 }
 
 .info-icon img {
