@@ -116,7 +116,6 @@ if (methodSlider) {
   const dotWraps = Array.from(document.querySelectorAll(".visual-dots, .method-dots"));
   const visualStrip = document.querySelector(".visual-strip");
   const visualTrack = document.querySelector(".visual-strip-track");
-  const methodSelect = methodSlider.querySelector("#method-select");
   const stripTiles = visualTrack ? Array.from(visualTrack.querySelectorAll(".strip-tile")) : [];
   const stripImages = stripTiles
     .map((tile) => {
@@ -132,6 +131,10 @@ if (methodSlider) {
   let index = 0;
 
   const imageForCard = (card) => card.dataset.image || stripImages[0]?.src || "";
+  const indexForImage = (src, fallbackIndex) => {
+    const match = cards.findIndex((card) => imageForCard(card) === src);
+    return match >= 0 ? match : fallbackIndex;
+  };
 
   const buildStripFrame = (activeIndex) => {
     const activeSrc = imageForCard(cards[activeIndex]);
@@ -156,6 +159,12 @@ if (methodSlider) {
     ordered.slice(0, 4).forEach((image, imageIndex) => {
       const figure = document.createElement("figure");
       figure.className = imageIndex === 0 ? "strip-tile strip-tile-lead" : "strip-tile";
+      figure.dataset.targetIndex = String(
+        imageIndex === 0 ? activeIndex + 1 : indexForImage(image.src, activeIndex)
+      );
+      figure.tabIndex = 0;
+      figure.setAttribute("role", "button");
+      figure.setAttribute("aria-label", imageIndex === 0 ? "Show next image" : `Show ${image.alt}`);
 
       const img = document.createElement("img");
       img.src = image.src;
@@ -171,18 +180,22 @@ if (methodSlider) {
     visualTrack.innerHTML = "";
     cards.forEach((_, i) => visualTrack.appendChild(buildStripFrame(i)));
     visualStrip?.setAttribute("aria-live", "polite");
-  }
 
-  if (methodSelect) {
-    methodSelect.innerHTML = "";
-    cards.forEach((card, i) => {
-      const option = document.createElement("option");
-      option.value = String(i);
-      option.textContent = card.querySelector(".method-title")?.textContent || `Inspection method ${i + 1}`;
-      methodSelect.appendChild(option);
+    const selectFromTile = (target) => {
+      const tile = target.closest(".strip-tile");
+      const frame = tile?.closest(".visual-strip-frame");
+      if (!tile || frame?.getAttribute("aria-hidden") === "true") return;
+
+      go(Number(tile.dataset.targetIndex));
+    };
+
+    visualTrack.addEventListener("click", (event) => selectFromTile(event.target));
+    visualTrack.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+
+      event.preventDefault();
+      selectFromTile(event.target);
     });
-
-    methodSelect.addEventListener("change", () => go(Number(methodSelect.value)));
   }
 
   const dots = dotWraps.map((wrap) =>
@@ -207,8 +220,6 @@ if (methodSlider) {
         frame.setAttribute("aria-hidden", String(frameIndex !== index));
       });
     }
-
-    if (methodSelect) methodSelect.value = String(index);
 
     dots.forEach((group) => {
       group.forEach((dot, d) => {

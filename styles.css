@@ -1301,6 +1301,12 @@ button {
   border-radius: 8px;
   background: rgba(26, 35, 46, 0.7);
   backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+.strip-tile:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
 }
 
 .strip-tile img {
@@ -1308,6 +1314,11 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 220ms ease;
+}
+
+.strip-tile:hover img {
+  transform: scale(1.025);
 }
 
 .strip-dots {
@@ -1339,45 +1350,6 @@ button {
 
 .method-slider {
   position: relative;
-}
-
-.method-picker {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 14px;
-  margin: 0 0 18px;
-}
-
-.method-picker label {
-  color: var(--copy);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-}
-
-.method-picker select {
-  width: min(100%, 340px);
-  min-height: 44px;
-  padding: 0 42px 0 16px;
-  border: 1px solid rgba(0, 229, 255, 0.35);
-  border-radius: 8px;
-  appearance: none;
-  background:
-    linear-gradient(45deg, transparent 50%, var(--white) 50%) right 18px center / 6px 6px no-repeat,
-    linear-gradient(135deg, var(--white) 50%, transparent 50%) right 13px center / 6px 6px no-repeat,
-    linear-gradient(180deg, rgba(10, 27, 47, 0.92), rgba(10, 27, 47, 0.72));
-  color: var(--white);
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.4;
-  cursor: pointer;
-}
-
-.method-picker select:focus {
-  outline: 2px solid rgba(0, 229, 255, 0.55);
-  outline-offset: 2px;
 }
 
 .method-viewport {
@@ -1846,12 +1818,6 @@ button {
   height: 100%;
   object-fit: cover;
   object-position: center;
-}
-
-.ind-row-reverse .ind-media img {
-  object-fit: contain;
-  padding: 12px;
-  background: rgba(6, 13, 25, 0.4);
 }
 
 .ind-apps li {
@@ -2336,10 +2302,6 @@ button {
 
   .strip-tile {
     height: 220px;
-  }
-
-  .method-picker {
-    justify-content: flex-start;
   }
 
   .method-aside {
