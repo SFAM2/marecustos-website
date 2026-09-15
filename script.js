@@ -131,60 +131,49 @@ if (methodSlider) {
   let index = 0;
 
   const imageForCard = (card) => card.dataset.image || stripImages[0]?.src || "";
-  const indexForImage = (src, fallbackIndex) => {
-    const match = cards.findIndex((card) => imageForCard(card) === src);
-    return match >= 0 ? match : fallbackIndex;
-  };
+  const imageOrderFor = (activeIndex) => {
+    const activeCard = cards[activeIndex];
+    const ordered = [
+      {
+        index: activeIndex,
+        src: imageForCard(activeCard),
+        alt: activeCard.querySelector(".method-title")?.textContent || "",
+      },
+    ];
+    const seen = new Set([ordered[0].src]);
 
-  const buildStripFrame = (activeIndex) => {
-    const activeSrc = imageForCard(cards[activeIndex]);
-    const seen = new Set([activeSrc]);
-    const ordered = [{ src: activeSrc, alt: cards[activeIndex].querySelector(".method-title")?.textContent || "" }];
+    for (let offset = 1; offset < cards.length && ordered.length < stripTiles.length; offset += 1) {
+      const cardIndex = (activeIndex + offset) % cards.length;
+      const src = imageForCard(cards[cardIndex]);
+
+      if (seen.has(src)) continue;
+
+      ordered.push({
+        index: cardIndex,
+        src,
+        alt: cards[cardIndex].querySelector(".method-title")?.textContent || "",
+      });
+      seen.add(src);
+    }
 
     stripImages.forEach((image) => {
-      if (!seen.has(image.src)) {
-        ordered.push(image);
-        seen.add(image.src);
-      }
+      if (ordered.length < stripTiles.length && !seen.has(image.src)) ordered.push({ ...image, index: activeIndex });
     });
 
-    stripImages.forEach((image) => {
-      if (ordered.length < 4) ordered.push(image);
-    });
-
-    const frame = document.createElement("div");
-    frame.className = "visual-strip-frame";
-    frame.setAttribute("aria-hidden", activeIndex === 0 ? "false" : "true");
-
-    ordered.slice(0, 4).forEach((image, imageIndex) => {
-      const figure = document.createElement("figure");
-      figure.className = imageIndex === 0 ? "strip-tile strip-tile-lead" : "strip-tile";
-      figure.dataset.targetIndex = String(
-        imageIndex === 0 ? activeIndex + 1 : indexForImage(image.src, activeIndex)
-      );
-      figure.tabIndex = 0;
-      figure.setAttribute("role", "button");
-      figure.setAttribute("aria-label", imageIndex === 0 ? "Show next image" : `Show ${image.alt}`);
-
-      const img = document.createElement("img");
-      img.src = image.src;
-      img.alt = imageIndex === 0 ? `Field imagery for ${image.alt}` : image.alt;
-      figure.appendChild(img);
-      frame.appendChild(figure);
-    });
-
-    return frame;
+    return ordered;
   };
 
   if (visualTrack && stripImages.length && cards.length) {
-    visualTrack.innerHTML = "";
-    cards.forEach((_, i) => visualTrack.appendChild(buildStripFrame(i)));
     visualStrip?.setAttribute("aria-live", "polite");
+    stripTiles.forEach((tile, tileIndex) => {
+      tile.tabIndex = 0;
+      tile.setAttribute("role", "button");
+      tile.setAttribute("aria-label", tileIndex === 0 ? "Show next image" : "Show this image");
+    });
 
     const selectFromTile = (target) => {
       const tile = target.closest(".strip-tile");
-      const frame = tile?.closest(".visual-strip-frame");
-      if (!tile || frame?.getAttribute("aria-hidden") === "true") return;
+      if (!tile) return;
 
       go(Number(tile.dataset.targetIndex));
     };
@@ -214,10 +203,26 @@ if (methodSlider) {
   function go(i) {
     index = (i + cards.length) % cards.length;
     track.style.transform = `translateX(-${index * 100}%)`;
-    if (visualTrack) {
-      visualTrack.style.transform = `translateX(-${index * 100}%)`;
-      Array.from(visualTrack.children).forEach((frame, frameIndex) => {
-        frame.setAttribute("aria-hidden", String(frameIndex !== index));
+    if (stripTiles.length && stripImages.length) {
+      imageOrderFor(index).forEach((image, imageIndex) => {
+        const tile = stripTiles[imageIndex];
+        const img = tile?.querySelector("img");
+        if (!tile || !img) return;
+
+        tile.dataset.targetIndex = String(
+          imageIndex === 0 ? index + 1 : image.index
+        );
+        tile.setAttribute("aria-label", imageIndex === 0 ? "Show next image" : `Show ${image.alt}`);
+        if (img.getAttribute("src") !== image.src) {
+          img.style.opacity = "0";
+          window.setTimeout(() => {
+            img.src = image.src;
+            img.alt = imageIndex === 0 ? `Field imagery for ${image.alt}` : image.alt;
+            img.style.opacity = "1";
+          }, 90);
+        } else {
+          img.alt = imageIndex === 0 ? `Field imagery for ${image.alt}` : image.alt;
+        }
       });
     }
 
