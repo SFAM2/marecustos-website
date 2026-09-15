@@ -96,8 +96,8 @@ window.INDUSTRIES = [
       ["Underwater weld & NDT assessment:", "Non-destructive testing of submerged welds, joints, and structural connections on docks and vessel hulls, returning georeferenced flaw inventories and wall thickness datasets formatted to class society requirements."],
       ["Cathodic protection survey:", "Measurement of CP potential across submerged port structures and vessel hulls, identifying depleted anodes and areas of insufficient protection before corrosion becomes a structural risk."],
     ],
-    img1: "assets/ind-shipping-1.png",
-    img2: "assets/ind-shipping-2.png",
+    img1: "assets/ind-shipping-1.jpg",
+    img2: "assets/ind-shipping-2.jpg",
   },
   {
     slug: "nuclear",
@@ -113,8 +113,8 @@ window.INDUSTRIES = [
       ["Confined space & restricted access inspection:", "Navigation through confined underwater environments where access is restricted and conventional inspection methods are impractical, delivering high-definition visual documentation and real-time data feedback from areas inaccessible to personnel."],
       ["Radiation monitoring:", "Real-time measurement of radiation levels in underwater areas, enabling safe assessment of radiologically sensitive zones without exposing personnel to contamination risk."],
     ],
-    img1: "assets/ind-nuclear-1.png",
-    img2: "assets/ind-nuclear-2.png",
+    img1: "assets/ind-nuclear-1.jpg",
+    img2: "assets/ind-nuclear-2.jpg",
   },
   {
     slug: "defense",
@@ -129,7 +129,7 @@ window.INDUSTRIES = [
       ["Seabed debris & anomaly mapping:", "Geo-referenced visual and sonar documentation of seabed obstructions or anomalies within a defined area, supporting site clearance assessments ahead of naval operations."],
       ["Rapid-deployment structural assessment:", "Fast-mobilization inspection for naval vessels, submerged cables, and defense infrastructure requiring urgent condition data."],
     ],
-    img1: "assets/ind-defense-1.png",
-    img2: "assets/ind-defense-2.png",
+    img1: "assets/ind-defense-1.jpg",
+    img2: "assets/ind-defense-2.jpg",
   },
 ];

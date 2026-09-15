@@ -114,8 +114,76 @@ if (methodSlider) {
   const track = methodSlider.querySelector(".method-track");
   const cards = Array.from(track.children);
   const dotWraps = Array.from(document.querySelectorAll(".visual-dots, .method-dots"));
-  const featureImg = document.querySelector(".feature-img");
+  const visualStrip = document.querySelector(".visual-strip");
+  const visualTrack = document.querySelector(".visual-strip-track");
+  const methodSelect = methodSlider.querySelector("#method-select");
+  const stripTiles = visualTrack ? Array.from(visualTrack.querySelectorAll(".strip-tile")) : [];
+  const stripImages = stripTiles
+    .map((tile) => {
+      const img = tile.querySelector("img");
+      return img
+        ? {
+            src: img.getAttribute("src"),
+            alt: img.getAttribute("alt") || "",
+          }
+        : null;
+    })
+    .filter(Boolean);
   let index = 0;
+
+  const imageForCard = (card) => card.dataset.image || stripImages[0]?.src || "";
+
+  const buildStripFrame = (activeIndex) => {
+    const activeSrc = imageForCard(cards[activeIndex]);
+    const seen = new Set([activeSrc]);
+    const ordered = [{ src: activeSrc, alt: cards[activeIndex].querySelector(".method-title")?.textContent || "" }];
+
+    stripImages.forEach((image) => {
+      if (!seen.has(image.src)) {
+        ordered.push(image);
+        seen.add(image.src);
+      }
+    });
+
+    stripImages.forEach((image) => {
+      if (ordered.length < 4) ordered.push(image);
+    });
+
+    const frame = document.createElement("div");
+    frame.className = "visual-strip-frame";
+    frame.setAttribute("aria-hidden", activeIndex === 0 ? "false" : "true");
+
+    ordered.slice(0, 4).forEach((image, imageIndex) => {
+      const figure = document.createElement("figure");
+      figure.className = imageIndex === 0 ? "strip-tile strip-tile-lead" : "strip-tile";
+
+      const img = document.createElement("img");
+      img.src = image.src;
+      img.alt = imageIndex === 0 ? `Field imagery for ${image.alt}` : image.alt;
+      figure.appendChild(img);
+      frame.appendChild(figure);
+    });
+
+    return frame;
+  };
+
+  if (visualTrack && stripImages.length && cards.length) {
+    visualTrack.innerHTML = "";
+    cards.forEach((_, i) => visualTrack.appendChild(buildStripFrame(i)));
+    visualStrip?.setAttribute("aria-live", "polite");
+  }
+
+  if (methodSelect) {
+    methodSelect.innerHTML = "";
+    cards.forEach((card, i) => {
+      const option = document.createElement("option");
+      option.value = String(i);
+      option.textContent = card.querySelector(".method-title")?.textContent || `Inspection method ${i + 1}`;
+      methodSelect.appendChild(option);
+    });
+
+    methodSelect.addEventListener("change", () => go(Number(methodSelect.value)));
+  }
 
   const dots = dotWraps.map((wrap) =>
     cards.map((_, i) => {
@@ -123,6 +191,7 @@ if (methodSlider) {
       dot.type = "button";
       dot.setAttribute("role", "tab");
       dot.setAttribute("aria-label", `Show inspection method ${i + 1}`);
+      dot.setAttribute("aria-selected", "false");
       dot.addEventListener("click", () => go(i));
       wrap.appendChild(dot);
       return dot;
@@ -132,20 +201,23 @@ if (methodSlider) {
   function go(i) {
     index = (i + cards.length) % cards.length;
     track.style.transform = `translateX(-${index * 100}%)`;
+    if (visualTrack) {
+      visualTrack.style.transform = `translateX(-${index * 100}%)`;
+      Array.from(visualTrack.children).forEach((frame, frameIndex) => {
+        frame.setAttribute("aria-hidden", String(frameIndex !== index));
+      });
+    }
+
+    if (methodSelect) methodSelect.value = String(index);
+
     dots.forEach((group) => {
       group.forEach((dot, d) => {
         const isActive = d === index;
         dot.classList.toggle("is-active", isActive);
         dot.setAttribute("aria-selected", String(isActive));
+        dot.tabIndex = isActive ? 0 : -1;
       });
     });
-
-    const src = cards[index].dataset.image;
-    if (featureImg && src && !featureImg.src.endsWith(src)) {
-      featureImg.style.opacity = "0";
-      featureImg.addEventListener("load", () => (featureImg.style.opacity = "1"), { once: true });
-      featureImg.src = src;
-    }
   }
 
   go(0);
