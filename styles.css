@@ -1433,9 +1433,9 @@ button {
 }
 
 .method-label {
-  margin: 0 0 8px;
-  color: var(--white);
-  font-size: 16px;
+  margin: 0 0 10px;
+  color: var(--copy);
+  font-size: 13px;
   font-weight: 400;
   letter-spacing: 1.6px;
   line-height: 1.5;
@@ -1454,9 +1454,10 @@ button {
 }
 
 .method-receive {
-  padding: 9px;
+  padding: 16px 18px;
   border: 1px solid rgba(0, 229, 255, 0.4);
-  border-radius: 4px;
+  border-radius: 8px;
+  background: rgba(0, 229, 255, 0.04);
 }
 
 .rule-heading {
