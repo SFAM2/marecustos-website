@@ -2001,10 +2001,28 @@ button {
 
 /* ===== Contact page ===== */
 .contact {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(180deg, #060d19 0%, #060d19 40%, #071c29 78%, #062231 100%);
 }
 
+.contact-glow {
+  position: absolute;
+  z-index: 0;
+  width: 1857.05px;
+  height: 476.58px;
+  right: -254.8px;
+  top: -156.28px;
+  background: rgba(0, 229, 255, 0.15);
+  filter: blur(199.95px);
+  border-radius: 16.4024px;
+  transform: rotate(-42.89deg);
+  pointer-events: none;
+}
+
 .contact-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: minmax(320px, 470px) minmax(0, 1fr);
   gap: 80px;
