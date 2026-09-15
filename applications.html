@@ -29,7 +29,16 @@
 
         <div class="nav-menu" id="primary-menu">
           <a class="nav-link" href="index.html">Home</a>
-          <a class="nav-link active" href="applications.html">Applications</a>
+          <div class="nav-dropdown-wrap">
+            <a class="nav-link nav-link-dropdown active" href="applications.html">Applications</a>
+            <div class="nav-dropdown">
+              <a href="applications.html#wall-thickness">Wall Thickness Measurement</a>
+              <a href="applications.html#corrosion-mapping">Corrosion Mapping</a>
+              <a href="applications.html#weld-inspection">Weld Inspection</a>
+              <a href="applications.html#cp-survey">CP Survey</a>
+              <a href="applications.html#visual-condition-survey">Visual Condition Survey</a>
+            </div>
+          </div>
           <div class="nav-dropdown-wrap">
             <a class="nav-link nav-link-dropdown" href="industries.html">Industries</a>
             <div class="nav-dropdown">
@@ -84,7 +93,7 @@
         <div class="method-slider">
           <div class="method-viewport">
             <div class="method-track" aria-live="polite">
-              <article class="method-card" data-node-id="2201:4634" data-image="assets/app-strip-1.png">
+              <article class="method-card" id="wall-thickness" data-method="wall-thickness" data-node-id="2201:4634" data-image="assets/app-strip-1.png">
                 <div class="method-aside">
                   <h2 class="method-title">Wall Thickness Measurement</h2>
                   <p class="method-sub">Know Your Remaining Metal, Everywhere That Matters.</p>
@@ -114,7 +123,7 @@
                 </div>
               </article>
 
-              <article class="method-card" data-node-id="2201:4888" data-image="assets/app-strip-2.png">
+              <article class="method-card" id="corrosion-mapping" data-method="corrosion-mapping" data-node-id="2201:4888" data-image="assets/app-strip-2.png">
                 <div class="method-aside">
                   <h2 class="method-title">Corrosion Mapping</h2>
                   <p class="method-sub">Visualize the Invisible Decay of Assets.</p>
@@ -144,7 +153,7 @@
                 </div>
               </article>
 
-              <article class="method-card" data-node-id="2201:4914" data-image="assets/app-strip-3.png">
+              <article class="method-card" id="weld-inspection" data-method="weld-inspection" data-node-id="2201:4914" data-image="assets/app-strip-3.png">
                 <div class="method-aside">
                   <h2 class="method-title">Weld Inspection</h2>
                   <p class="method-sub">Structural Integrity at Every Junction.</p>
@@ -174,7 +183,7 @@
                 </div>
               </article>
 
-              <article class="method-card" data-node-id="2201:4940" data-image="assets/app-strip-4.png">
+              <article class="method-card" id="cp-survey" data-method="cp-survey" data-node-id="2201:4940" data-image="assets/app-strip-4.png">
                 <div class="method-aside">
                   <h2 class="method-title">CP Survey</h2>
                   <p class="method-sub">Monitor Your Asset's Shield Against the Sea.</p>
@@ -202,7 +211,7 @@
                 </div>
               </article>
 
-              <article class="method-card" data-node-id="2201:4962" data-image="assets/app-strip-1.png">
+              <article class="method-card" id="visual-condition-survey" data-method="visual-condition-survey" data-node-id="2201:4962" data-image="assets/app-strip-1.png">
                 <div class="method-aside">
                   <h2 class="method-title">Visual Condition Survey</h2>
                   <p class="method-sub">High-Definition Eyes in High-Pressure Voids.</p>
@@ -340,8 +349,8 @@
       <div class="footer-bottom">
         <p>© 2026 Mare Custos. Data-Led Subsea Inspection.</p>
         <div>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
         </div>
       </div>
     </footer>

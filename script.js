@@ -238,6 +238,18 @@ if (methodSlider) {
 
   go(0);
 
+  const methodSection = document.querySelector(".app-methods");
+  const goToMethodHash = () => {
+    const slug = decodeURIComponent(location.hash.replace("#", ""));
+    if (!slug) return;
+    const i = cards.findIndex((c) => c.dataset.method === slug);
+    if (i < 0) return;
+    go(i);
+    (methodSection || cards[i]).scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  goToMethodHash();
+  window.addEventListener("hashchange", goToMethodHash);
+
   const delay = Number(methodSlider.dataset.autoplay) || 0;
   if (delay && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     let timer = setInterval(() => go(index + 1), delay);

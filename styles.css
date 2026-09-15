@@ -1337,6 +1337,55 @@ button {
 
 .app-methods {
   padding-top: 40px;
+  scroll-margin-top: 110px;
+}
+
+.method-card {
+  scroll-margin-top: 110px;
+}
+
+.legal-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 160px 24px 96px;
+}
+
+.legal-page h1 {
+  margin: 0 0 6px;
+  color: var(--white);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.legal-page .legal-updated {
+  margin: 0 0 40px;
+  color: var(--copy);
+  font-size: 14px;
+}
+
+.legal-page h2 {
+  margin: 36px 0 12px;
+  color: var(--cyan);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.legal-page p,
+.legal-page li {
+  color: var(--copy);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.legal-page ul {
+  margin: 0 0 8px;
+  padding-left: 22px;
+}
+
+.legal-page a {
+  color: var(--cyan);
 }
 
 .method-slider {
