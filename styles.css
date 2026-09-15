@@ -1526,6 +1526,8 @@ button {
   max-width: 100%;
   height: auto;
   object-fit: contain;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 16px;
 }
 
 .rov-list {
