@@ -90,12 +90,11 @@ button {
 .nav-menu {
   display: flex;
   justify-content: flex-start;
-  gap: 12px;
+  gap: 28px;
   padding: 0 28px 0 110px;
 }
 
 .nav-link {
-  min-width: 81px;
   padding: 4px 0;
   font-size: 16px;
   font-weight: 500;
