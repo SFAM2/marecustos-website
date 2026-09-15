@@ -1381,7 +1381,7 @@ button {
   border-right: 1px solid #3b494c;
 }
 
-.method-title {
+.method-card .method-title {
   margin: 0;
   color: var(--cyan);
   font-size: 24px;
