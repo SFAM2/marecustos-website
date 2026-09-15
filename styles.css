@@ -866,7 +866,7 @@ button {
 }
 
 .why-card-tall {
-  min-height: 586px;
+  min-height: 605px;
 }
 
 .why-card-short {
@@ -1599,16 +1599,10 @@ button {
   position: absolute;
   top: 1px;
   left: 0;
-  display: grid;
-  width: 22px;
-  height: 22px;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(0, 229, 255, 0.14);
-  color: var(--cyan);
-  content: "\2713";
-  font-size: 13px;
-  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  content: "";
+  background: url("assets/icon-check.svg") center / contain no-repeat;
 }
 
 .payloads-head h2 {
