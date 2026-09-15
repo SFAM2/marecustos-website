@@ -51,7 +51,7 @@ button {
 
 .site-header {
   position: fixed;
-  top: 33px;
+  top: 24px;
   left: 50%;
   z-index: 20;
   width: min(var(--max), calc(100% - 48px));
@@ -89,9 +89,9 @@ button {
 
 .nav-menu {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 12px;
-  padding: 0 28px;
+  padding: 0 28px 0 110px;
 }
 
 .nav-link {
@@ -118,15 +118,16 @@ button {
 
 .nav-link-dropdown::after {
   position: absolute;
-  top: calc(50% + 1px);
+  top: 50%;
   right: 0;
-  width: 6px;
-  height: 6px;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
+  width: 0;
+  height: 0;
+  border-top: 4px solid var(--white);
+  border-right: 3.5px solid transparent;
+  border-left: 3.5px solid transparent;
   content: "";
-  opacity: 0.78;
-  transform: translateY(-50%) rotate(45deg);
+  opacity: 1;
+  transform: translateY(-30%);
 }
 
 .nav-dropdown-wrap {
