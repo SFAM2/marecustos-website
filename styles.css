@@ -122,7 +122,7 @@ button {
   right: 0;
   width: 0;
   height: 0;
-  border-top: 4px solid var(--white);
+  border-top: 4px solid currentColor;
   border-right: 3.5px solid transparent;
   border-left: 3.5px solid transparent;
   content: "";
