@@ -1080,7 +1080,7 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 16px 0;
+  padding: 40px 0;
   border: 0;
   background: transparent;
   color: var(--heading-soft);
@@ -2000,7 +2000,13 @@ button {
   background: linear-gradient(180deg, #060d19 0%, #060d19 40%, #071c29 78%, #062231 100%);
 }
 
-.contact-glow {
+#purpose,
+.ind-panel-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-glow {
   position: absolute;
   z-index: 0;
   width: 1857.05px;
@@ -2012,6 +2018,12 @@ button {
   border-radius: 16.4024px;
   transform: rotate(-42.89deg);
   pointer-events: none;
+}
+
+#purpose > :not(.page-glow),
+.ind-panel-mount {
+  position: relative;
+  z-index: 1;
 }
 
 .contact-grid {
