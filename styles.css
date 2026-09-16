@@ -748,9 +748,15 @@ button {
   justify-content: space-between;
   gap: 18px;
   padding: 16px 20px;
-  border: 1px solid rgba(0, 229, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
   border-radius: 8px;
   background: #06182b;
+}
+
+.anomaly-card:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.12);
 }
 
 #timeline-panel .anomaly-card {
@@ -1632,10 +1638,16 @@ button {
   display: flex;
   flex-direction: column;
   padding: 25px;
-  border: 1px solid rgba(86, 224, 253, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
   background: linear-gradient(180deg, #0a1b2f 0%, rgba(10, 27, 47, 0.7) 100%);
   backdrop-filter: blur(6px);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.payload-card:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.14);
 }
 
 .payload-media {
@@ -2000,30 +2012,16 @@ button {
   background: linear-gradient(180deg, #060d19 0%, #060d19 40%, #071c29 78%, #062231 100%);
 }
 
-#purpose,
-.ind-panel-wrap {
-  position: relative;
-  overflow: hidden;
-}
-
 .page-glow {
   position: absolute;
   z-index: 0;
-  width: 1857.05px;
-  height: 476.58px;
-  right: -254.8px;
-  top: -156.28px;
-  background: rgba(0, 229, 255, 0.15);
-  filter: blur(199.95px);
-  border-radius: 16.4024px;
-  transform: rotate(-42.89deg);
+  top: -140px;
+  right: -140px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.16) 0%, rgba(0, 229, 255, 0) 70%);
   pointer-events: none;
-}
-
-#purpose > :not(.page-glow),
-.ind-panel-mount {
-  position: relative;
-  z-index: 1;
 }
 
 .contact-grid {
@@ -2039,7 +2037,7 @@ button {
 
 .contact-left h1 {
   margin: 0;
-  color: var(--heading);
+  color: var(--cyan);
   font-size: 52px;
   font-weight: 700;
   line-height: 1.2;
@@ -2550,4 +2548,11 @@ button {
   .cta-panel h2 {
     font-size: 32px;
   }
+}
+
+/* Client correction: remove the slider pagination dots */
+.method-dots,
+.visual-dots,
+.payload-dots {
+  display: none;
 }
