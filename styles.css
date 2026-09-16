@@ -2550,9 +2550,9 @@ button {
   }
 }
 
-/* Client correction: remove the slider pagination dots */
+/* Client correction: remove the method-slider pagination dots
+   (payload dots kept — they page through all 11 payloads) */
 .method-dots,
-.visual-dots,
-.payload-dots {
+.visual-dots {
   display: none;
 }
