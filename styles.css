@@ -879,7 +879,8 @@ button {
   min-height: 307px;
 }
 
-.why-card img {
+.why-card img,
+.why-card video {
   position: absolute;
   inset: 0;
   width: 100%;
