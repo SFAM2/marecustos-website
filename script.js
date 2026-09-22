@@ -117,65 +117,26 @@ if (methodSlider) {
   const visualStrip = document.querySelector(".visual-strip");
   const visualTrack = document.querySelector(".visual-strip-track");
   const stripTiles = visualTrack ? Array.from(visualTrack.querySelectorAll(".strip-tile")) : [];
-  const stripImages = stripTiles
-    .map((tile) => {
-      const img = tile.querySelector("img");
-      return img
-        ? {
-            src: img.getAttribute("src"),
-            alt: img.getAttribute("alt") || "",
-          }
-        : null;
-    })
-    .filter(Boolean);
   let index = 0;
 
-  const imageForCard = (card) => card.dataset.image || stripImages[0]?.src || "";
-  const imageOrderFor = (activeIndex) => {
-    const activeCard = cards[activeIndex];
-    const ordered = [
-      {
-        index: activeIndex,
-        src: imageForCard(activeCard),
-        alt: activeCard.querySelector(".method-title")?.textContent || "",
-      },
-    ];
-    const seen = new Set([ordered[0].src]);
-
-    for (let offset = 1; offset < cards.length && ordered.length < stripTiles.length; offset += 1) {
-      const cardIndex = (activeIndex + offset) % cards.length;
-      const src = imageForCard(cards[cardIndex]);
-
-      if (seen.has(src)) continue;
-
-      ordered.push({
-        index: cardIndex,
-        src,
-        alt: cards[cardIndex].querySelector(".method-title")?.textContent || "",
-      });
-      seen.add(src);
-    }
-
-    stripImages.forEach((image) => {
-      if (ordered.length < stripTiles.length && !seen.has(image.src)) ordered.push({ ...image, index: activeIndex });
-    });
-
-    return ordered;
-  };
-
-  if (visualTrack && stripImages.length && cards.length) {
+  // Each strip tile is permanently bound to the method at the same position
+  // (tile 0 -> method 0, tile 1 -> method 1, ...). No image shuffling, so a
+  // click always navigates to the method whose image the tile shows.
+  if (visualTrack && stripTiles.length && cards.length) {
     visualStrip?.setAttribute("aria-live", "polite");
     stripTiles.forEach((tile, tileIndex) => {
       tile.tabIndex = 0;
       tile.setAttribute("role", "button");
-      tile.setAttribute("aria-label", tileIndex === 0 ? "Show next image" : "Show this image");
+      const title = cards[tileIndex]?.querySelector(".method-title")?.textContent?.trim();
+      if (title) tile.setAttribute("aria-label", `Show ${title}`);
     });
 
     const selectFromTile = (target) => {
       const tile = target.closest(".strip-tile");
       if (!tile) return;
 
-      go(Number(tile.dataset.targetIndex));
+      const i = stripTiles.indexOf(tile);
+      if (i >= 0) go(i);
     };
 
     visualTrack.addEventListener("click", (event) => selectFromTile(event.target));
@@ -203,28 +164,10 @@ if (methodSlider) {
   function go(i) {
     index = (i + cards.length) % cards.length;
     track.style.transform = `translateX(-${index * 100}%)`;
-    if (stripTiles.length && stripImages.length) {
-      imageOrderFor(index).forEach((image, imageIndex) => {
-        const tile = stripTiles[imageIndex];
-        const img = tile?.querySelector("img");
-        if (!tile || !img) return;
-
-        tile.dataset.targetIndex = String(
-          imageIndex === 0 ? index + 1 : image.index
-        );
-        tile.setAttribute("aria-label", imageIndex === 0 ? "Show next image" : `Show ${image.alt}`);
-        if (img.getAttribute("src") !== image.src) {
-          img.style.opacity = "0";
-          window.setTimeout(() => {
-            img.src = image.src;
-            img.alt = imageIndex === 0 ? `Field imagery for ${image.alt}` : image.alt;
-            img.style.opacity = "1";
-          }, 90);
-        } else {
-          img.alt = imageIndex === 0 ? `Field imagery for ${image.alt}` : image.alt;
-        }
-      });
-    }
+    stripTiles.forEach((tile, tileIndex) => {
+      const on = tileIndex === index || (index >= stripTiles.length && tileIndex === 0);
+      tile.classList.toggle("is-active", on);
+    });
 
     dots.forEach((group) => {
       group.forEach((dot, d) => {
