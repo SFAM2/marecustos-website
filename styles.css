@@ -2032,12 +2032,14 @@ button {
 .page-glow {
   position: absolute;
   z-index: 0;
-  top: -140px;
+  top: -180px;
   right: -140px;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 229, 255, 0.16) 0%, rgba(0, 229, 255, 0) 70%);
+  width: 680px;
+  height: 260px;
+  background: rgba(0, 229, 255, 0.08);
+  filter: blur(190px);
+  border-radius: 16px;
+  transform: rotate(-42.89deg);
   pointer-events: none;
 }
 
