@@ -2249,7 +2249,6 @@ button {
   .navbar.is-menu-open,
   .navbar:has(.nav-menu.is-open) {
     border-radius: 28px;
-    background: rgba(6, 13, 25, 0.98);
   }
 
   .brand {
@@ -2315,6 +2314,15 @@ button {
     opacity: 1;
     visibility: visible;
     transform: none;
+    display: none;
+  }
+
+  .nav-dropdown-wrap.is-expanded .nav-dropdown {
+    display: flex;
+  }
+
+  .nav-dropdown-wrap.is-expanded .nav-link-dropdown::after {
+    transform: translateY(-30%) rotate(180deg);
   }
 
   .nav-dropdown a {

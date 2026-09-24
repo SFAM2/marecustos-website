@@ -16,11 +16,29 @@ if (menuToggle && navMenu) {
   });
 }
 
+const isMobileNav = () => window.matchMedia("(max-width: 1060px)").matches;
+
 document.querySelectorAll(".nav-menu a, .nav-cta").forEach((link) => {
   link.addEventListener("click", () => {
+    // On mobile, a dropdown parent toggles its submenu (below) instead of
+    // closing the whole menu.
+    if (link.classList.contains("nav-link-dropdown") && isMobileNav()) return;
     navMenu?.classList.remove("is-open");
     navbar?.classList.remove("is-menu-open");
     menuToggle?.setAttribute("aria-expanded", "false");
+  });
+});
+
+// Mobile: Applications / Industries act as accordion toggles — their
+// submenus are collapsed by default and expand on tap.
+document.querySelectorAll(".nav-link-dropdown").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    if (!isMobileNav()) return;
+    const wrap = link.closest(".nav-dropdown-wrap");
+    if (!wrap) return;
+    event.preventDefault();
+    const expanded = wrap.classList.toggle("is-expanded");
+    link.setAttribute("aria-expanded", String(expanded));
   });
 });
 
