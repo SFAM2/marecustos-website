@@ -2249,6 +2249,7 @@ button {
   .navbar.is-menu-open,
   .navbar:has(.nav-menu.is-open) {
     border-radius: 28px;
+    background: rgba(6, 13, 25, 0.98);
   }
 
   .brand {
@@ -2279,6 +2280,8 @@ button {
     gap: 4px;
     padding: 14px 0 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
   }
 
   .nav-menu.is-open + .nav-cta {
