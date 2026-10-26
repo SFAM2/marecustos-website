@@ -1,0 +1,17 @@
+{
+  "name": "marecustos-website",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prepare:site": "node scripts/prepare-site.mjs",
+    "dev": "npm run prepare:site && next dev",
+    "build": "npm run prepare:site && next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "16.4.2",
+    "nodemailer": "^10.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}
