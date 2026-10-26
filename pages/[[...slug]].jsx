@@ -19,10 +19,10 @@ export async function getStaticProps({ params }) {
     .replace(/href="index\.html(#[^"]*)?"/g, 'href="/$1"')
     .replace(/href="(about|applications|industries|contact|privacy|terms)\.html/g, 'href="/$1')
     .replace(/(src|poster)="assets\//g, '$1="/assets/');
-  return { props: { title, html, scripts } };
+  return { props: { title, html, scripts, turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '' } };
 }
 
-export default function Page({ title, html, scripts }) {
+export default function Page({ title, html, scripts, turnstileSiteKey }) {
   useEffect(() => {
     // Native links reload the document, preserving the existing scripts' lifecycle.
     let cancelled = false;
@@ -43,34 +43,93 @@ export default function Page({ title, html, scripts }) {
     const status = document.createElement('p');
     status.setAttribute('role', 'status');
     status.className = 'contact-status';
+    let widgetId;
+    let widgetContainer;
+    let widgetScript;
+    let submitting = false;
+    const submitButton = form?.querySelector('[type="submit"]');
     if (form) {
       form.querySelector('[name="consent"]').required = true;
       form.appendChild(status);
+      if (turnstileSiteKey) {
+        submitButton.disabled = true;
+        widgetContainer = document.createElement('div');
+        form.insertBefore(widgetContainer, submitButton);
+        function renderWidget() {
+          if (cancelled || widgetId !== undefined) return;
+          window.turnstile.ready(() => {
+            if (cancelled || widgetId !== undefined) return;
+            widgetId = window.turnstile.render(widgetContainer, {
+              sitekey: turnstileSiteKey,
+              action: 'contact',
+              theme: 'dark',
+              size: 'flexible',
+              callback: () => { submitButton.disabled = submitting; status.textContent = ''; },
+              'expired-callback': () => { submitButton.disabled = true; },
+              'error-callback': () => {
+                submitButton.disabled = true;
+                status.textContent = 'Security verification is unavailable. Please refresh or email contact@mare-custos.com.';
+              },
+            });
+          });
+        }
+        if (window.turnstile) renderWidget();
+        else {
+          widgetScript = document.createElement('script');
+          widgetScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+          widgetScript.async = true;
+          widgetScript.onload = renderWidget;
+          widgetScript.onerror = () => {
+            if (!cancelled) status.textContent = 'Security verification could not load. Please refresh or email contact@mare-custos.com.';
+          };
+          document.head.appendChild(widgetScript);
+        }
+      }
     }
     async function submit(event) {
       event.preventDefault();
-      if (!form.reportValidity()) return;
-      const button = form.querySelector('[type="submit"]');
-      button.disabled = true;
+      if (submitting || !form.reportValidity()) return;
+      const payload = Object.fromEntries(new FormData(form));
+      if (turnstileSiteKey && !payload['cf-turnstile-response']) {
+        status.textContent = 'Please complete the security verification.';
+        return;
+      }
+      submitting = true;
+      submitButton.disabled = true;
       status.textContent = 'Sending your enquiry...';
       try {
         const response = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+          body: JSON.stringify(payload),
         });
-        if (!response.ok) throw new Error('Send failed');
+        if (!response.ok) {
+          if (response.status === 429) throw new Error('Too many submissions. Please wait 10 minutes before trying again.');
+          const result = await response.json().catch(() => null);
+          throw new Error(result?.error || 'Your enquiry could not be sent. Please try again later.');
+        }
         form.reset();
         status.textContent = 'Thank you. Your enquiry has been sent.';
-      } catch {
-        status.textContent = 'Your enquiry could not be sent. Please email contact@mare-custos.com or try again later.';
+      } catch (error) {
+        status.textContent = error.message || 'Your enquiry could not be sent. Please email contact@mare-custos.com or try again later.';
       } finally {
-        button.disabled = false;
+        submitting = false;
+        if (turnstileSiteKey) {
+          submitButton.disabled = true;
+          if (widgetId !== undefined) window.turnstile?.reset(widgetId);
+        } else submitButton.disabled = false;
       }
     }
     form?.addEventListener('submit', submit);
-    return () => { cancelled = true; form?.removeEventListener('submit', submit); status.remove(); };
-  }, [scripts]);
+    return () => {
+      cancelled = true;
+      form?.removeEventListener('submit', submit);
+      if (widgetId !== undefined) window.turnstile?.remove(widgetId);
+      widgetContainer?.remove();
+      widgetScript?.remove();
+      status.remove();
+    };
+  }, [scripts, turnstileSiteKey]);
 
   return <>
     <Head>
