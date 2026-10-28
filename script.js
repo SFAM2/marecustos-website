@@ -130,6 +130,7 @@ logoRows.forEach((row) => {
 const methodSlider = document.querySelector(".method-slider");
 if (methodSlider) {
   const track = methodSlider.querySelector(".method-track");
+  const viewport = methodSlider.querySelector(".method-viewport");
   const cards = Array.from(track.children);
   const dotWraps = Array.from(document.querySelectorAll(".visual-dots, .method-dots"));
   const visualStrip = document.querySelector(".visual-strip");
@@ -181,7 +182,14 @@ if (methodSlider) {
 
   function go(i) {
     index = (i + cards.length) % cards.length;
+    // Fragment navigation must not scroll the clipping window as well as the track.
+    viewport.scrollLeft = 0;
     track.style.transform = `translateX(-${index * 100}%)`;
+    cards.forEach((card, cardIndex) => {
+      const active = cardIndex === index;
+      card.inert = !active;
+      card.setAttribute("aria-hidden", String(!active));
+    });
     stripTiles.forEach((tile, tileIndex) => {
       const on = tileIndex === index || (index >= stripTiles.length && tileIndex === 0);
       tile.classList.toggle("is-active", on);
@@ -201,7 +209,8 @@ if (methodSlider) {
 
   const methodSection = document.querySelector(".app-methods");
   const goToMethodHash = () => {
-    const slug = decodeURIComponent(location.hash.replace("#", ""));
+    let slug;
+    try { slug = decodeURIComponent(location.hash.slice(1)); } catch { return; }
     if (!slug) return;
     const i = cards.findIndex((c) => c.dataset.method === slug);
     if (i < 0) return;
@@ -210,6 +219,18 @@ if (methodSlider) {
   };
   goToMethodHash();
   window.addEventListener("hashchange", goToMethodHash);
+  document.querySelectorAll('.nav-menu a[href*="#"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const destination = new URL(link.href, location.href);
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      if (destination.origin !== location.origin || destination.pathname !== location.pathname) return;
+      const match = cards.find((card) => `#${card.dataset.method}` === destination.hash);
+      if (!match) return;
+      event.preventDefault();
+      if (location.hash !== destination.hash) history.pushState(null, "", destination.hash);
+      goToMethodHash();
+    });
+  });
 
   const delay = Number(methodSlider.dataset.autoplay) || 0;
   if (delay && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

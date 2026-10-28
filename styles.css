@@ -1416,7 +1416,7 @@ button {
 }
 
 .method-viewport {
-  overflow: hidden;
+  overflow: clip;
 }
 
 .method-track {
